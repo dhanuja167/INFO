@@ -1,0 +1,32 @@
+OPEN SSL 
+
+AES enc
+Openssl aes-128-cbc -e -in r.txt -out c1.bin -k “password” -nosalt
+AES dec
+Openssl aes-128-cbc -d -in c1.bin -out rt.txt -k “password” -nosalt
+
+RSA
+Openssl genrsa -out pvtkey.pem
+Openssl rsa -pubout -in pvtkey.pem -out pubkey.pem
+Openssl rsa -text -in pvtkey.pem
+Openssl rsautl -encrypt -in plain.txt -pubin -inkey pubkey.pem -out c3.bin
+Openssl rsautl -decrypt -in c3.bin -inkey pvtkey.pem -out r1.txt
+
+SHA
+Openssl md5 r.txt 
+Openssl SHA256 r.txt 
+
+DIGITAL SIGNATURE
+Openssl dgst -sha1 -sign pvtkey.pem -out s.bin r.txt 
+Openssl dgst -sha1 -verify pubkey.pem -signature s.bin r.txt
+
+DES Enc
+openssl des-cbc -e -in plaintext.txt -out cipher.bin -k "password" -nosalt
+DES dec
+openssl des-cbc -d -in cipher.bin -out pt.txt -k "password" –nosalt
+
+AVALANCHE (change something in the text file)
+openssl enc -des-cbc -in pt.txt -out cipher2.bin -k "password" -nosalt
+
+VERIFY SIGN
+openssl dgst -sha1 -verify pubkey.pem -signature s.bin plaintext.txt

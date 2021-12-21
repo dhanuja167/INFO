@@ -1,0 +1,17 @@
+primes and primitive root
+
+for i in range(20,51):
+ flag = 0
+ for j in range(2,i):
+    if((i%j) == 0):
+        flag = 1
+    break
+    if(flag == 0):
+        print("Primitive roots of ",i," :- ")
+ for x in range(2,i):
+    l = []
+    for y in range(1,i):
+        if((x**y)%i not in l): l.append((x**y)%i)
+        else: break
+        if(len(l) == i-1): print(x,end=" ")
+print("\n")

@@ -1,0 +1,276 @@
+1.RSA:
+CODE:
+
+#RSA
+# p 1312961745803 
+# q 1000000999999
+# e 1284916147
+import math
+print("******RSA******")
+p = int(input("Enter the prime no p :"))
+q = int(input("Enter the prime no q :"))
+print("p = ",p)
+print("q = ",q)
+#n = p*q
+n= p*q
+print("n = ",n)
+#phi_n = (p-1)*(q-1)
+phi_n = (p-1)*(q-1)
+print("Euler's totient = ",phi_n)
+#calculate public key (e)
+for i in range(2,phi_n):
+if(math.gcd(i,phi_n)==1):
+e=i
+break
+else:
+continue
+print("public key (e) = ",e)
+#calculate private key (d)
+for i in range(1,phi_n):
+if(((i*e)%phi_n)==1):
+d=i
+break
+else:
+continue
+print("private key (e) = ",d)
+def encrypt(M,e,n):
+c=pow(M,e,n)
+#ct = txt[c]
+return c
+def decrypt(C,d,n):
+p=pow(C,d,n)
+pt = txt[p]
+return pt
+txt = "abcdefghijklmnopqrstuvwxyz"
+choice = int(input("Enter 1-Encryption 2-Decryption 0-Exit"))
+while(choice!=0):
+if(choice==1):
+m = str(input("Enter the text to encrypt :"))
+M = txt.index(m)
+cipher = encrypt(M,e,n)
+print("Encrypted cipher text = ",cipher)
+elif(choice==2):
+C = int(input("Enter the text to decrypt :"))
+plain = decrypt(C,d,n)
+print("Decrypted cipher text = ",plain)
+else:
+print("Wrong choice")
+choice = int(input("Enter 1-Encryption 2-Decryption 0-Exit"))
+
+---------------------------------------------------------------------------------
+
+import  math
+
+def euliersTotient(p,q):
+	return (p-1)*(q-1)
+
+def euclidean(a,b): 
+    if(b == 0): return a
+    l.append(math.floor(a/b)) 
+    return euclidean(b,a%b)
+
+def multiplicativeInverse(a,b): 
+    if(euclidean(a,b) == 1):
+        t1,t2,i = 0,1,0
+        while(abs(t2) != max(a,b) and i<len(l)):
+            if(i<len(l)): t = t1 - (t2 * l[i]) 
+            t1,t2,i = t2,t,i+1
+            
+        if(t1<0): 
+            t1 = t1+a 
+        return t1
+    else: return 0
+
+
+print("Enter...\n\t1) To Key Generation\n\t2) To Encrytion\n\t3) To Decryption\n\t4) To EXIT")
+n1 = int(input("\nEnter your choice(4 to EXIT) : "))
+while(n1 != 4):
+    a = "abcdefghijklmnopqrstuvwxyz"
+    if(n1 == 1):
+        p = int(input("\nEnter the first prime number : "))
+        q = int(input("\nEnter the second prime number: "))
+        n = p*q
+        num = euliersTotient(p,q)
+        while(True):
+            e = int(input("\nEnter the value of e         : "))
+            l = []
+            d = multiplicativeInverse(max(e,num),min(e,num))
+            if(d != 0): break
+        print("\nValue of 'n'\t\t: ",n,"\nValue of phi of n\t: ",num,"\nValue of 'd'\t\t: ",d,"\nPublic key(e,n) \t: (",e,",",n,")","\nPrivate key(d,n) \t: (",d,",",n,")")
+    if(n1 == 2):
+        pt = input("\nEnter the plain text \t: ")
+        e = int(input("\nEnter 'e' value \t:  "))
+        n = int(input("\nEnter 'n' value \t:  "))
+        for k in pt:
+            i = a.index(k)
+            prod = math.floor(pow(i,e,n)%n)
+            print(k," = ",prod)
+    if(n1 == 3):
+        s = ""
+        ct = list(map(int,input("\nEnter the Plain text values  : ").split()))
+        p = int(input("\nEnter the first prime number : "))
+        q = int(input("\nEnter the second prime number: "))
+        n = p*q
+        num = euliersTotient(p,q)
+        e = int(input("\nEnter the value of e         : "))
+        l = []
+        d = multiplicativeInverse(max(e,num),min(e,num))
+        for i in ct:
+             prod = math.floor(pow(i,d,n)%n)
+             print(i,"\t\t\t: ",prod)
+             s += str(prod)
+    n1 = int(input("\nEnter your choice(4 to EXIT) : "))
+
+------------------------------------------------------------------------------------------------------------------
+import java.math.BigInteger;
+import java.util.Scanner;
+
+public class RSA {
+    static Scanner in = new Scanner(System.in);
+    static BigInteger r = new BigInteger("1");
+    static BigInteger s = new BigInteger("0");
+    static BigInteger q = new BigInteger("2");
+
+    static BigInteger extEuclid(BigInteger e, BigInteger pi, int val)
+    {
+        BigInteger ePi = pi;
+        BigInteger b = s;
+        BigInteger c = r;
+        BigInteger [][] arr = new BigInteger[10000][7];
+        int i=0;
+        while(true)
+        {
+            arr[i][0] = pi.divide(e);
+            arr[i][1] = pi;
+            arr[i][2] = e;
+            arr[i][3] = pi.mod(e);
+            arr[i][4] = b;
+            arr[i][5] = c;
+            arr[i][6] = arr[i][4].subtract(arr[i][0].multiply(arr[i][5]));
+            e = arr[i][3];
+            pi = arr[i][2];
+            b = arr[i][5];
+            c = arr[i][6];
+            if(arr[i][3].equals(s))
+                break;
+            i++;
+        }
+        if(val == 0)
+        {
+            return b.mod(ePi); // Inverse
+        }
+        else
+        {
+            return pi; // GCD
+        }
+    }
+
+    static void keyGen()
+    {
+        BigInteger p,q,e,d;
+        System.out.println("\t\tKey Generator");
+        System.out.print("Enter key 'p' : ");
+        p = in.nextBigInteger();
+        System.out.print("Enter key 'q' : ");
+        q = in.nextBigInteger();
+        BigInteger n = p.multiply(q);
+        BigInteger eulerPi = (p.subtract(r)).multiply(q.subtract(r));
+        while(true)
+        {
+            System.out.print("    Enter 'e' : ");
+            e = in.nextBigInteger();
+            if (extEuclid(e,eulerPi,1).equals(r))
+            {
+                System.out.println(" Public Key : { "+ e +", "+ n +" }");
+                d = extEuclid(e,eulerPi,0);
+                System.out.println("Private Key : { "+ d +", "+ n +" }");
+                break;
+            }
+            else
+            {
+                System.out.println("Try with another number");
+            }
+        }
+    }
+
+    static BigInteger expo(BigInteger m,BigInteger e, BigInteger n)
+    {
+        if(e.equals(s))
+            return r;
+        if(e.equals(r))
+            return m.mod(n);
+        BigInteger t = expo(m,e.divide(q),n);
+        t = (t.multiply(t)).mod(n);
+        if(e.mod(q).equals(s))
+            return t;
+        else
+            return ((m.mod(n)).multiply(t)).mod(n);
+    }
+//    static BigInteger powFind(BigInteger m, BigInteger e)
+//    {
+//        BigInteger i,a = r;
+//        for(i = s; !i.equals(e); i = i.add(r))
+//        {
+//            a = a.multiply(m);
+//        }
+//        return a;
+//    }
+    static void encrypt()
+    {
+        BigInteger e,n;
+        System.out.println("\t\tEncryption");
+        System.out.print("   Enter key 'e' : ");
+        e = in.nextBigInteger();
+        System.out.print("   Enter key 'n' : ");
+        n  = in.nextBigInteger();
+        System.out.print("Enter Plain Text : ");
+        String pt = in.next();
+        for(int i=0; i<pt.length(); i++)
+        {
+            BigInteger a = BigInteger.valueOf(pt.charAt(i) - 65);
+            System.out.println(expo(a,e,n));
+        }
+    }
+
+    static void decrypt()
+    {
+        BigInteger d,n;
+        System.out.print("Enter key 'd' : ");
+        d = in.nextBigInteger();
+        System.out.print("Enter key 'n' : ");
+        n = in.nextBigInteger();
+        System.out.print("Enter the Number of words : ");
+        int no = in.nextInt();
+        BigInteger arr[] = new BigInteger[no];
+        System.out.println("Enter the values....");
+        for(int i=0; i<no; i++)
+        {
+            arr[i] = in.nextBigInteger();
+        }
+        System.out.println();
+        for(int i=0; i<no; i++)
+        {
+            int character = (expo(arr[i],d,n).intValue() + 65);
+            System.out.print((char)character);
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        System.out.print("\t\tRSA Methods\n  1.Key Generator\n  2.Encryption\n  3.Decryption\n  4.Exit\n Enter a option : ");
+        int opt = in.nextInt();
+        if(opt == 1)
+            keyGen();
+        else if(opt == 2)
+            encrypt();
+        else if(opt == 3)
+            decrypt();
+        else if(opt == 4)
+            System.exit(0);
+        else {
+            System.out.println("Try with a Correct option");
+            RSA rsa = new RSA();
+            rsa.main(args);
+        }
+    }
+}
